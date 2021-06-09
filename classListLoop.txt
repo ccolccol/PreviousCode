@@ -1,0 +1,187 @@
+//: ListLoop.h
+
+/*
+The header file here defines a template 
+for class "ListLoop". By passing the number 
+of elements created to constructor function 
+you can create a double-linked and loop list.
+The individual data in each element can be gained 
+by operator []. This list would do clockwise loop 
+when index is positive and do counterclockwise 
+loop when index is negative, and the index can 
+exceed the number of elements but it cannot be 0. 
+The deleteNode(n) function deletes n-th element, and
+insertNode(pos, newdata) function inserts a new 
+element of "newdata" after the pos-th. If you want 
+to insert before head-element or to append after 
+rear-element, insertBeforeHead(newdata) or 
+insertAfterRear(newdata) should be deployed 
+respectively. Function clockwisePrint() prints the 
+list clockwisely, function counterclockwisePrint()
+prints counterclockwisely and function getLength() 
+gets current number of elements in loop-list.
+*/
+
+#include <iostream>
+#include <assert.h>
+using namespace std;
+
+template <class dataType>
+class ListLoop {
+	struct node {
+		dataType data;
+		node* previous;
+		node* next;
+	}listHead;		// This head-element exists permanently.
+	node* head;
+	int listLength;
+public:
+	ListLoop(int len = 1);
+	void insertNode(int position, dataType newData);
+	void insertBeforeHead(dataType newData);
+	void insertAfterRear(dataType newData);
+	void deleteNode(int nodeIndex);
+	void clockwisePrint() const;
+	void counterclockwisePrint() const;
+	dataType& operator[](int nodeIndex);
+	int getLength() const {
+		return listLength;
+	}
+};
+
+template <class dataType>
+ListLoop <dataType>::ListLoop(int len) {
+	listLength = len;
+	head = &listHead;
+	node* currentNode = head;
+	for (int i = 0; i < len - 1; i++){
+		node* newNode = new node;
+		currentNode -> next = newNode;
+		newNode -> previous = currentNode;
+		currentNode = newNode;
+	}
+	currentNode -> next = head;
+	head -> previous = currentNode;
+}
+
+template <class dataType>
+void ListLoop <dataType>::insertNode(int position, dataType newData) {
+	// Illegal to insert before head-element or after rear-element.
+	assert(position > 0 && position < listLength);
+	node* nodeBeforeInserted = head;
+	for(int i = 0; i < position - 1; i++){
+		nodeBeforeInserted = nodeBeforeInserted -> next;
+	}
+	node* nodeAfterInserted = nodeBeforeInserted -> next;
+	node* newInsertedNode = new node;
+	newInsertedNode -> data = newData;
+	newInsertedNode -> next = nodeAfterInserted;
+	newInsertedNode -> previous = nodeBeforeInserted;
+	nodeBeforeInserted -> next = newInsertedNode;
+	nodeAfterInserted -> previous = newInsertedNode;
+	listLength ++;
+}
+
+template <class dataType>
+void ListLoop <dataType>::insertBeforeHead(dataType newData) {
+	// Create a new node, then assign old head-element to new node, 
+	// afterwards modify the data of old head-element, letting the 
+	// old head-element become the inserted element. At last make 
+	// the previous pointer ponit to rear-element.
+	node* nodeTwoAfterNewHead = head -> next;
+	node* nodeAfterNewHead = new node;
+	*nodeAfterNewHead = listHead;
+	nodeAfterNewHead -> previous = head;
+	head -> data = newData;
+	head -> next = nodeAfterNewHead;
+	nodeTwoAfterNewHead -> previous = nodeAfterNewHead;
+	listLength ++;
+}
+
+template <class dataType>
+void ListLoop <dataType>::insertAfterRear(dataType newData) {
+	node* newInsertedNode = new node;
+	newInsertedNode -> data = newData;
+	newInsertedNode -> next = head;
+	node* oldRearNode = head;
+	for(int i = 0; i < listLength - 1; i++){
+		oldRearNode = oldRearNode -> next;
+	}
+	oldRearNode -> next = newInsertedNode;
+	newInsertedNode -> previous = oldRearNode;
+	head -> previous = newInsertedNode;
+	listLength ++;
+}
+
+template <class dataType>
+void ListLoop <dataType>::deleteNode(int nodeIndex) {
+	// Legal to delete head-element, but the index cannot 
+	// exceed the total number.
+	assert(nodeIndex >= 1 && nodeIndex <= listLength);
+	if(nodeIndex == 1){
+		// To delete head-element, assign the second element
+		// to head-element, then delete second element. 
+		// Aferwards make previous pointer of head-element point 
+		// to rear-element. 
+		node* nodeAfterOldHead = head -> next;
+		node* nodeTwoAfterOldHead = nodeAfterOldHead -> next;
+		node* rearNode = head -> previous;
+		*head = *nodeAfterOldHead;
+		head -> previous = rearNode;
+		nodeTwoAfterOldHead -> previous = head;
+		delete nodeAfterOldHead;
+		listLength --;
+		return;
+	}
+	node* nodeBeforeDeletedOne = head;
+	for(int i = 0; i < nodeIndex - 2; i++){
+		nodeBeforeDeletedOne = nodeBeforeDeletedOne -> next;
+	}
+	node* nodeDeleted = nodeBeforeDeletedOne -> next;
+	node* nodeAfterDeletedOne = nodeDeleted -> next;
+	nodeBeforeDeletedOne -> next = nodeDeleted -> next;
+	nodeAfterDeletedOne -> previous = nodeBeforeDeletedOne;
+	delete nodeDeleted;
+	listLength --;
+}
+
+template <class dataType>
+void ListLoop <dataType>::clockwisePrint() const {
+	node* currentNode = head;
+	for(int i = 0; i < listLength; i++){
+		cout << currentNode -> data << endl;
+		currentNode = currentNode -> next;
+	}
+}
+
+template <class dataType>
+void ListLoop <dataType>::counterclockwisePrint() const {
+	node* currentNode = head;
+	for(int i = 0; i < listLength; i++){
+		cout << currentNode -> data << endl;
+		currentNode = currentNode -> previous;
+	}
+}
+
+template <class dataType>
+dataType& ListLoop<dataType>::operator[](int nodeIndex) {
+	// Legal to pass in a negative to make list do 
+	// counterclockwisely loop. But assure that index
+	// does not equal 0.
+	assert(nodeIndex != 0);
+	node* currentNode = head;
+	if(nodeIndex > 0){
+		for(int i = 0; i < nodeIndex - 1; i++){
+			currentNode = currentNode -> next;
+		}
+		return currentNode -> data;
+	}
+	else {
+		nodeIndex = 0 - nodeIndex;
+		for(int i = 0; i < nodeIndex - 1; i++){
+			currentNode = currentNode -> previous;
+		}
+		return currentNode -> data;
+	}
+}
+///:~ 

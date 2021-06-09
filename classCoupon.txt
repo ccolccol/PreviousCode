@@ -1,0 +1,74 @@
+//: Coupon.h
+
+/*
+The class "Coupon" is used to determine yield to maturity 
+of coupon and whether it is issued at a discount or a premium.
+You may enter following paraments in sequence: par value, coupon
+rate, maturity and current price. Port of the class is to deploy 
+isDisOrPre(), and you can calculate the precise yield to maturity 
+by deploying calYmat() as you wish.
+*/
+class Coupon
+{
+	double parValue;
+	double couponRate;
+	double matu;
+	double price;
+	const double eps;
+public:
+	Coupon(double par = 0, double cor = 0, double mat = 0, double pri = 0) : 
+	  parValue(par), couponRate(cor / 100), matu(mat), price(pri), eps(1e-6){
+	  };
+	  double calCuy() const;
+	  double calTest(double testR) const;
+	  double calYmat() const;
+	  void isDisOrPre() const;
+};
+///:~ 
+
+
+
+
+//: Coupon.cpp
+#include "Coupon.h"
+#include<iostream>
+#include<cmath>
+using namespace std;
+
+double Coupon::calCuy() const {
+	return parValue * couponRate / price;
+}
+
+double Coupon::calTest(double testR) const {
+	double coe = 1;
+	for(int i = 0; i < matu; i++) coe *= (1 + testR);
+	return parValue * couponRate / testR * (1 - 1 / coe) + parValue / coe;
+}
+
+double Coupon::calYmat() const{
+	double cuy = calCuy();
+	double low, high, mid;
+	for(low = cuy * 0.25, high = cuy * 1.75, mid = (low + high) / 2 ; fabs(price - calTest(mid)) > eps; ){
+		if((price - calTest(mid)) < (eps * (-1))){
+			low = mid;
+			mid = (low + high) / 2;
+		}
+		if((price - calTest(mid)) > eps){
+			high = mid;
+			mid = (low + high) / 2;
+		}
+	}
+	mid *= 100;
+	if(mid - (int)mid <= 0.5) mid = (int)mid;
+	else mid = (int)mid + 1;
+	return mid;
+}
+
+void Coupon::isDisOrPre() const {
+	double cuy = calCuy();
+	double ymat = calYmat();
+	cout << endl;
+	if(cuy < ymat) cout << "This coupon is issued at a discount." << endl;
+	else if(cuy > ymat) cout << "This coupon is issued at a premium." << endl;
+	else cout << "This coupon is issued at par." << endl;
+} ///:~ 
