@@ -1,0 +1,95 @@
+Sub myInput_Calc()
+    Dim des As String
+    des = ActiveDocument.Name
+    
+    Dim fd As FileDialog
+    Set fd = Application.FileDialog(msoFileDialogOpen)
+    fd.InitialFileName = ActiveDocument.Path
+    
+    If fd.Show = -1 Then
+        Dim sum(17), rowidx, colinitial, offset As Integer
+        For i = 0 To 17
+            sum(i) = 0
+        Next
+        
+        Dim source As Variant
+        For Each source In fd.SelectedItems
+           Documents.Open (source)
+           Windows(source).Activate
+           
+           For i = 0 To 13
+                If i >= 0 And i <= 6 Then
+                    If i = 0 Then
+                        offset = 0
+                        rowidx = 3
+                        colinitial = 2
+                    End If
+                ElseIf i >= 7 And i <= 10 Then
+                    If i = 7 Then
+                        offset = 0
+                        rowidx = 5
+                        colinitial = 2
+                    End If
+                ElseIf i >= 11 And i <= 13 Then
+                    If i = 11 Then
+                        offset = 0
+                        rowidx = 7
+                        colinitial = 2
+                    End If
+                End If
+                
+                sum(i) = sum(i) + Val(ActiveDocument.Tables(1).Cell(rowidx, colinitial + offset).Range)
+                offset = offset + 1
+           Next
+           
+           Windows(source).Close
+        Next
+    
+        For i = 0 To 6
+            sum(14) = sum(14) + sum(i)
+        Next
+        For i = 7 To 10
+            sum(15) = sum(15) + sum(i)
+        Next
+        For i = 11 To 13
+            sum(16) = sum(16) + sum(i)
+        Next
+    
+        Windows(des).Activate
+    
+        For i = 0 To 13
+            If i >= 0 And i <= 6 Then
+                If i = 0 Then
+                    offset = 0
+                    rowidx = 3
+                    colinitial = 2
+                End If
+            ElseIf i >= 7 And i <= 10 Then
+                If i = 7 Then
+                    offset = 0
+                    rowidx = 5
+                    colinitial = 2
+                End If
+            ElseIf i >= 11 And i <= 13 Then
+                If i = 11 Then
+                    offset = 0
+                    rowidx = 7
+                    colinitial = 2
+                End If
+            End If
+           
+            ActiveDocument.Tables(1).Cell(rowidx, colinitial + offset).Range = sum(i)
+            offset = offset + 1
+            
+            If i = 6 Then
+                ActiveDocument.Tables(1).Cell(rowidx, colinitial + offset).Range = sum(14)
+            ElseIf i = 10 Then
+                ActiveDocument.Tables(1).Cell(rowidx, colinitial + offset).Range = sum(15)
+            ElseIf i = 13 Then
+                ActiveDocument.Tables(1).Cell(rowidx, colinitial + offset).Range = sum(16)
+            End If
+            
+        Next
+    
+    End If
+End Sub
