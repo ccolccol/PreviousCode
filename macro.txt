@@ -23,14 +23,12 @@ Sub myInput_Calc()
                     rowidx = 3
                     colinitial = 2
                     sumidx = 14
-                End If
-                If i = 7 Then
+                ElseIf i = 7 Then
                     offset = 0
                     rowidx = 5
                     colinitial = 2
                     sumidx = 15
-                End If
-                If i = 11 Then
+                ElseIf i = 11 Then
                     offset = 0
                     rowidx = 7
                     colinitial = 2
@@ -52,13 +50,11 @@ Sub myInput_Calc()
                 offset = 0
                 rowidx = 3
                 colinitial = 2
-            End If
-            If i = 7 Then
+            ElseIf i = 7 Then
                 offset = 0
                 rowidx = 5
                 colinitial = 2
-            End If
-            If i = 11 Then
+            ElseIf i = 11 Then
                 offset = 0
                 rowidx = 7
                 colinitial = 2
