@@ -1,15 +1,15 @@
-1. github上添加一个repository
-2. 本地的代码文件夹，右键打开git bash
+1. github涓婃坊鍔犱竴涓猺epository
+2. 鏈湴鐨勪唬鐮佹枃浠跺す锛屽彸閿墦寮�git bash
 3. git init
 4. git remote add origin https://github.com/xxxx/xxxx
 5. git add .
 6. git commit -m "xxxx"
-7. 上传本地代码文件夹到github，git push --set-upstream origin master
-8. 之后新建分支，git checkout -b xx，在其中修改代码
+7. 涓婁紶鏈湴浠ｇ爜鏂囦欢澶瑰埌github锛実it push --set-upstream origin master
+8. 涔嬪悗鏂板缓鍒嗘敮锛実it checkout -b xx锛屽湪鍏朵腑淇敼浠ｇ爜
 9. git add -A
 10. git commit -m "xxxx"
-11.  git push origin xx（xx是新建分支名称）
-12. 到github上创建pull request，然后merge
-13. 删除远程分支，git push origin :xx
-14. 查看远程分支，git branch -r
-15. 查看本地分支，git branch
+11. git push origin xx锛坸x鏄柊寤哄垎鏀悕绉帮級
+12. 鍒癵ithub涓婂垱寤簆ull request锛岀劧鍚巑erge
+13. 鍒犻櫎杩滅▼鍒嗘敮锛実it push origin :xx
+14. 鏌ョ湅杩滅▼鍒嗘敮锛実it branch -r
+15. 鏌ョ湅鏈湴鍒嗘敮锛実it branch
